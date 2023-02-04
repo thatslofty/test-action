@@ -1,13 +1,15 @@
-name: "Hello World"
-description: "Greet someone and record the time"
+name: "Test Action"
+description: "Report new TS errors"
 inputs:
-  who-to-greet: # id of input
-    description: "Who to greet"
+  user-id:
+    description: "User ID"
     required: true
-    default: "World"
+  token:
+    description: "Token"
+    required: true
 outputs:
-  time: # id of output
-    description: "The time we greeted you"
+  errors-list:
+    description: "New errors to report"
 runs:
   using: "node16"
   main: "dist/index.js"

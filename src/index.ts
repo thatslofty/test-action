@@ -12,7 +12,9 @@ async function run(): Promise<void> {
     `https://gh-actions.vercel.app/api/hello?userId=${userId}&token=${token}`
   );
 
-  core.setOutput("errors-list", response);
+  console.log(response);
+
+  core.setOutput("errors-list", response.data);
   // Get the JSON webhook payload for the event that triggered the workflow
   // const payload = JSON.stringify(github.context.payload, undefined, 2);
   // console.log(`The event payload: ${payload}`);

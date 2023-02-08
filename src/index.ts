@@ -6,7 +6,7 @@ import { runTSC } from "./run-tsc";
 async function run(): Promise<void> {
   const user_id = core.getInput("user-id");
   const token = core.getInput("token");
-  console.log(github.context);
+  console.log("context", JSON.stringify(github.context));
   // const branch = core.getInput("base-branch");
   // const errorsArray: string[] = [];
 
@@ -36,6 +36,8 @@ async function run(): Promise<void> {
       ],
     }
   );
+
+  console.log("response", JSON.stringify(response));
 
   // TODO: send errors list to api
   // TODO: post new errors in github as comment

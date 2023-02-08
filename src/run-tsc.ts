@@ -7,12 +7,15 @@ export async function runTSC(): Promise<string[]> {
     const child = subProcess.spawn("yarn", ["tsc", "--noEmit"]); // TODO: verify the wd when this runs.
 
     child.stdout.on("data", (data) => {
+      console.log("stdout data", data);
       if (data.includes("error TS")) {
         errorsArray.push(data?.toString());
       }
     });
 
-    child.stderr.on("data", (data) => {});
+    child.stderr.on("data", (data) => {
+      console.log("stderr data", data);
+    });
 
     child.on("error", (error) => {
       console.error(`error: ${error.message}`);

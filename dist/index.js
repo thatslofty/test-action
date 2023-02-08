@@ -11922,7 +11922,7 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const user_id = core.getInput("user-id");
         const token = core.getInput("token");
-        console.log(github.context);
+        console.log("context", JSON.stringify(github.context));
         // const branch = core.getInput("base-branch");
         // const errorsArray: string[] = [];
         // const response = await axios.get(
@@ -11944,6 +11944,7 @@ function run() {
                 "pages/api/helloFriends.ts(36,18): error TS7006: Parameter 'thing' implicitly has an 'any' type.\n",
             ],
         });
+        console.log("response", JSON.stringify(response));
         // TODO: send errors list to api
         // TODO: post new errors in github as comment
     });
@@ -11986,11 +11987,14 @@ function runTSC() {
             // TODO: possibly swap this with https://github.com/actions/toolkit/tree/main/packages/exec
             const child = child_process_1.default.spawn("yarn", ["tsc", "--noEmit"]); // TODO: verify the wd when this runs.
             child.stdout.on("data", (data) => {
+                console.log("stdout data", data);
                 if (data.includes("error TS")) {
                     errorsArray.push(data === null || data === void 0 ? void 0 : data.toString());
                 }
             });
-            child.stderr.on("data", (data) => { });
+            child.stderr.on("data", (data) => {
+                console.log("stderr data", data);
+            });
             child.on("error", (error) => {
                 console.error(`error: ${error.message}`);
                 reject();

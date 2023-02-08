@@ -30,7 +30,8 @@ async function run(): Promise<void> {
     {
       token,
       user_id,
-      branch: "develop", // TODO: temp
+      branch: github.context.payload.pull_request?.head?.ref, // TODO: temp
+      base_branch: github.context.payload.pull_request?.base?.ref,
       errors: [
         "pages/api/helloFriends.ts(36,18): error TS7006: Parameter 'thing' implicitly has an 'any' type.\n",
       ],

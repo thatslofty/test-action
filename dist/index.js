@@ -11919,6 +11919,7 @@ const github = __importStar(__nccwpck_require__(5438));
 const axios_1 = __importDefault(__nccwpck_require__(8757));
 const run_tsc_1 = __nccwpck_require__(2406);
 function run() {
+    var _a, _b, _c, _d;
     return __awaiter(this, void 0, void 0, function* () {
         const user_id = core.getInput("user-id");
         const token = core.getInput("token");
@@ -11939,14 +11940,13 @@ function run() {
         const response = yield axios_1.default.post(`https://gh-actions.vercel.app/api/typescript-errors`, {
             token,
             user_id,
-            branch: "develop",
+            branch: (_b = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.head) === null || _b === void 0 ? void 0 : _b.ref,
+            base_branch: (_d = (_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.base) === null || _d === void 0 ? void 0 : _d.ref,
             errors: [
                 "pages/api/helloFriends.ts(36,18): error TS7006: Parameter 'thing' implicitly has an 'any' type.\n",
             ],
         });
         console.log("response", response);
-        // TODO: send errors list to api
-        // TODO: post new errors in github as comment
     });
 }
 try {

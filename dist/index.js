@@ -13192,7 +13192,7 @@ function run() {
         const user_id = core.getInput("user-id");
         const token = core.getInput("token");
         yield (0, exec_1.exec)("yarn");
-        console.log("context", JSON.stringify(github.context));
+        // console.log("context", JSON.stringify(github.context));
         // const branch = core.getInput("base-branch");
         // const errorsArray: string[] = [];
         // const response = await axios.get(
@@ -13211,11 +13211,9 @@ function run() {
             user_id,
             branch: (_b = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.head) === null || _b === void 0 ? void 0 : _b.ref,
             base_branch: (_d = (_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.base) === null || _d === void 0 ? void 0 : _d.ref,
-            errors: [
-                "pages/api/helloFriends.ts(36,18): error TS7006: Parameter 'thing' implicitly has an 'any' type.\n",
-            ],
+            errors: errorsArray,
         });
-        console.log("response", response);
+        console.log("response", response.data);
     });
 }
 try {

@@ -8,7 +8,7 @@ async function run(): Promise<void> {
   const user_id = core.getInput("user-id");
   const token = core.getInput("token");
   await exec("yarn");
-  console.log("context", JSON.stringify(github.context));
+  // console.log("context", JSON.stringify(github.context));
   // const branch = core.getInput("base-branch");
   // const errorsArray: string[] = [];
 
@@ -34,13 +34,11 @@ async function run(): Promise<void> {
       user_id,
       branch: github.context.payload.pull_request?.head?.ref, // TODO: temp
       base_branch: github.context.payload.pull_request?.base?.ref,
-      errors: [
-        "pages/api/helloFriends.ts(36,18): error TS7006: Parameter 'thing' implicitly has an 'any' type.\n",
-      ],
+      errors: errorsArray,
     }
   );
 
-  console.log("response", response);
+  console.log("response", response.data);
 
   // TODO: send errors list to api
   // TODO: post new errors in github as comment

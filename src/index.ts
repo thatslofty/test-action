@@ -37,7 +37,7 @@ async function run(): Promise<void> {
     }
   );
 
-  console.log("response", JSON.stringify(response));
+  console.log("response", response);
 
   // TODO: send errors list to api
   // TODO: post new errors in github as comment

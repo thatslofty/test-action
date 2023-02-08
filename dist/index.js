@@ -11944,7 +11944,7 @@ function run() {
                 "pages/api/helloFriends.ts(36,18): error TS7006: Parameter 'thing' implicitly has an 'any' type.\n",
             ],
         });
-        console.log("response", JSON.stringify(response));
+        console.log("response", response);
         // TODO: send errors list to api
         // TODO: post new errors in github as comment
     });
@@ -11987,13 +11987,16 @@ function runTSC() {
             // TODO: possibly swap this with https://github.com/actions/toolkit/tree/main/packages/exec
             const child = child_process_1.default.spawn("yarn", ["tsc", "--noEmit"]); // TODO: verify the wd when this runs.
             child.stdout.on("data", (data) => {
-                console.log("stdout data", data);
+                console.log("stdout data", data === null || data === void 0 ? void 0 : data.toString());
                 if (data.includes("error TS")) {
                     errorsArray.push(data === null || data === void 0 ? void 0 : data.toString());
                 }
             });
             child.stderr.on("data", (data) => {
-                console.log("stderr data", data);
+                console.log("stderr data", data === null || data === void 0 ? void 0 : data.toString());
+                if (data.includes("error TS")) {
+                    errorsArray.push(data === null || data === void 0 ? void 0 : data.toString());
+                }
             });
             child.on("error", (error) => {
                 console.error(`error: ${error.message}`);

@@ -7,8 +7,8 @@ import { runTSC } from "./run-tsc";
 async function run(): Promise<void> {
   const user_id = core.getInput("user-id");
   const token = core.getInput("token");
-  await exec("yarn");
-  // console.log("context", JSON.stringify(github.context));
+  await exec("yarn"); // TODO: this needs to work with npm also. Could we just install tsc here without yarn?
+  console.log("context", JSON.stringify(github.context));
   // const branch = core.getInput("base-branch");
   // const errorsArray: string[] = [];
 

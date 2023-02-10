@@ -13191,8 +13191,8 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const user_id = core.getInput("user-id");
         const token = core.getInput("token");
-        yield (0, exec_1.exec)("yarn");
-        // console.log("context", JSON.stringify(github.context));
+        yield (0, exec_1.exec)("yarn"); // TODO: this needs to work with npm also. Could we just install tsc here without yarn?
+        console.log("context", JSON.stringify(github.context));
         // const branch = core.getInput("base-branch");
         // const errorsArray: string[] = [];
         // const response = await axios.get(

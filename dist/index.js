@@ -13187,7 +13187,7 @@ const exec_1 = __nccwpck_require__(1514);
 const axios_1 = __importDefault(__nccwpck_require__(8757));
 const run_tsc_1 = __nccwpck_require__(2406);
 function run() {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f;
     return __awaiter(this, void 0, void 0, function* () {
         const user_id = core.getInput("user-id");
         const token = core.getInput("token");
@@ -13209,8 +13209,9 @@ function run() {
         const response = yield axios_1.default.post(`https://gh-actions.vercel.app/api/typescript-errors`, {
             token,
             user_id,
-            branch: (_b = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.head) === null || _b === void 0 ? void 0 : _b.ref,
-            base_branch: (_d = (_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.base) === null || _d === void 0 ? void 0 : _d.ref,
+            action: (_b = (_a = github.context) === null || _a === void 0 ? void 0 : _a.payload) === null || _b === void 0 ? void 0 : _b.action,
+            branch: (_d = (_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.head) === null || _d === void 0 ? void 0 : _d.ref,
+            base_branch: (_f = (_e = github.context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.base) === null || _f === void 0 ? void 0 : _f.ref,
             errors: errorsArray,
         });
         console.log("response", response.data);

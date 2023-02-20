@@ -32,6 +32,7 @@ async function run(): Promise<void> {
     {
       token,
       user_id,
+      action: github.context?.payload?.action,
       branch: github.context.payload.pull_request?.head?.ref, // TODO: temp
       base_branch: github.context.payload.pull_request?.base?.ref,
       errors: errorsArray,
@@ -40,8 +41,7 @@ async function run(): Promise<void> {
 
   console.log("response", response.data);
 
-  // TODO: send errors list to api
-  // TODO: post new errors in github as comment
+  // TODO: post new errors in github
 }
 
 try {

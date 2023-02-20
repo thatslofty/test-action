@@ -24,7 +24,7 @@ async function run(): Promise<void> {
   // console.log(`The event payload: ${payload}`);
 
   const errorsArray = await runTSC();
-  console.log(errorsArray);
+  // console.log(errorsArray);
 
   // TODO: possibly swap with https://github.com/actions/toolkit/tree/main/packages/http-client
   const response = await axios.post(
@@ -51,16 +51,13 @@ async function run(): Promise<void> {
         title: err.message,
       });
     });
-
-    const count = newErrors.length;
-    core.setFailed(`${count} New Error${count > 1 ? "s" : ""} Added`);
   }
   // else if (fixedErrors.length) {
   //   const count = fixedErrors.length;
   //   core.setOutput(`${count} New Error${count > 1 ? "s" : ""} Added`);
   // }
 
-  console.log("response", response.data);
+  // console.log("response", response.data);
 
   // TODO: post new errors in github
 }

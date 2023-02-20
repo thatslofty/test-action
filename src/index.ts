@@ -8,7 +8,7 @@ async function run(): Promise<void> {
   const user_id = core.getInput("user-id");
   const token = core.getInput("token");
   await exec("yarn"); // TODO: this needs to work with npm also. Could we just install tsc here without yarn?
-  console.log("context", JSON.stringify(github.context));
+  // console.log("context", JSON.stringify(github.context));
   // const branch = core.getInput("base-branch");
   // const errorsArray: string[] = [];
 
@@ -38,6 +38,27 @@ async function run(): Promise<void> {
       errors: errorsArray,
     }
   );
+
+  const newErrors = response.data?.newErrors ?? [];
+  const fixedErrors = response.data?.fixedErrors ?? [];
+  if (newErrors.length) {
+    // build annotations in code for newErrors
+    newErrors.forEach((err: any) => {
+      core.error("New TS Error", {
+        file: err.path,
+        startLine: err.line,
+        startColumn: err.col,
+        title: err.message,
+      });
+    });
+
+    const count = newErrors.length;
+    core.setFailed(`${count} New Error${count > 1 ? "s" : ""} Added`);
+  }
+  // else if (fixedErrors.length) {
+  //   const count = fixedErrors.length;
+  //   core.setOutput(`${count} New Error${count > 1 ? "s" : ""} Added`);
+  // }
 
   console.log("response", response.data);
 

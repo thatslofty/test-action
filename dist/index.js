@@ -13204,7 +13204,6 @@ function run() {
         // const payload = JSON.stringify(github.context.payload, undefined, 2);
         // console.log(`The event payload: ${payload}`);
         const errorsArray = yield (0, run_tsc_1.runTSC)();
-        // console.log(errorsArray);
         // TODO: possibly swap with https://github.com/actions/toolkit/tree/main/packages/http-client
         const response = yield axios_1.default.post(`https://gh-actions.vercel.app/api/typescript-errors`, {
             token,
@@ -13226,6 +13225,8 @@ function run() {
                     title: err.message,
                 });
             });
+            const count = newErrors.length;
+            core.setFailed(`${count} New Error${count > 1 ? "s" : ""} Added`);
         }
     });
 }

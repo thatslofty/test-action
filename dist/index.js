@@ -13226,7 +13226,14 @@ function run() {
                 });
             });
             const count = newErrors.length;
+            core.summary.addDetails("test", `${count} New Error${count > 1 ? "s" : ""} Added`);
+            core.summary.write();
+            // core.summary(`${count} New Error${count > 1 ? "s" : ""} Added`);
             core.setFailed(`${count} New Error${count > 1 ? "s" : ""} Added`);
+        }
+        else if (fixedErrors.length) {
+            // const count = fixedErrors.length;
+            // core.setOutput(`${count} New Error${count > 1 ? "s" : ""} Added`);
         }
     });
 }

@@ -10,96 +10,57 @@ async function run(): Promise<void> {
   const githubToken = core.getInput("github-token");
   await exec("yarn"); // TODO: this needs to work with npm also. Could we just install tsc here without yarn?
 
-  // core.setOutput("title", "My title");
-  // console.log("context", JSON.stringify(github.context));
-  // const branch = core.getInput("base-branch");
-  // const errorsArray: string[] = [];
+  const errorsArray = await runTSC();
 
-  // const response = await axios.get(
-  //   `https://gh-actions.vercel.app/api/hello?userId=${userId}&token=${token}`
-  // );
+  // TODO: possibly swap with https://github.com/actions/toolkit/tree/main/packages/http-client
+  const response = await axios.post(
+    `https://gh-actions.vercel.app/api/typescript-errors`,
+    {
+      token,
+      user_id,
+      action: github.context?.payload?.action,
+      branch: github.context.payload.pull_request?.head?.ref,
+      base_branch: github.context.payload.pull_request?.base?.ref,
+      errors: errorsArray,
+    }
+  );
 
-  // console.log(response);
+  const newErrors = response.data?.newErrors ?? [];
+  const fixedErrors = response.data?.fixedErrors ?? [];
+  if (newErrors.length) {
+    // build annotations in code for newErrors
+    newErrors.forEach((err: any) => {
+      core.error("New TS Error", {
+        file: err.path,
+        startLine: err.line,
+        startColumn: err.col,
+        title: err.message,
+      });
+    });
+  }
 
-  // core.setOutput("errors-list", response.data?.status);
-  // Get the JSON webhook payload for the event that triggered the workflow
-  // const payload = JSON.stringify(github.context.payload, undefined, 2);
-  // console.log(`The event payload: ${payload}`);
+  const newCount = newErrors.length;
+  const fixedCount = fixedErrors.length;
+  const successMessage = "👍 No New Errors";
+  const fixedMessage = `👍 ${fixedCount} Error${fixedCount > 1 ? "s" : ""} Fixed`;
+  const failureMessage = `👎 ${newCount} New Error${newCount > 1 ? "s" : ""} Added`;
 
-  // const errorsArray = await runTSC();
-
-  // // TODO: possibly swap with https://github.com/actions/toolkit/tree/main/packages/http-client
-  // const response = await axios.post(
-  //   `https://gh-actions.vercel.app/api/typescript-errors`,
-  //   {
-  //     token,
-  //     user_id,
-  //     action: github.context?.payload?.action,
-  //     branch: github.context.payload.pull_request?.head?.ref, // TODO: temp
-  //     base_branch: github.context.payload.pull_request?.base?.ref,
-  //     errors: errorsArray,
-  //   }
-  // );
   const octokit = github.getOctokit(githubToken);
-
-  // console.log("context", github.context?.repo, github.context?.payload);
-
   const { data } = await octokit.rest.checks.listForRef({
     ...github.context.repo,
     ref: github.context?.payload.after,
   });
-
-  const thisCheck = data.check_runs.find((r) => r.name === "Error Report"); // TODO: can we use the app id or something?
-  // console.log(data.check_runs);
-  console.log(thisCheck?.app?.owner);
-
-  const result = await octokit.rest.checks.update({
+  const currentCheck = data.check_runs.find(
+    (r) => r.name === core.getInput("job-name")
+  );
+  await octokit.rest.checks.update({
     ...github.context.repo,
-    check_run_id: thisCheck?.id,
-    conclusion: "neutral",
+    check_run_id: currentCheck?.id,
+    conclusion: newErrors.length ? "failure" : "success",
     output: {
-      title: "👍 Error Report Title",
-      summary: "This is a summary",
-      text: "This is a text",
+      title: newCount > 0 ? failureMessage : fixedCount > 0 ? fixedMessage : successMessage,
     },
   });
-
-  console.log(result);
-  // const listSuiteForRef = await octokit.rest.checks.listSuitesForRef({
-  //   owner: github.context?.repo.owner,
-  //   repo: github.context?.repo.repo,
-  //   ref: github.context?.payload.after,
-  // });
-
-  // console.log({ listForRef, listSuiteForRef });
-
-  // const newErrors = response.data?.newErrors ?? [];
-  // const fixedErrors = response.data?.fixedErrors ?? [];
-  // if (newErrors.length) {
-  //   // build annotations in code for newErrors
-  //   newErrors.forEach((err: any) => {
-  //     core.error("New TS Error", {
-  //       file: err.path,
-  //       startLine: err.line,
-  //       startColumn: err.col,
-  //       title: err.message,
-  //     });
-  //   });
-
-  //   const count = newErrors.length;
-  //   core.summary.addDetails(
-  //     "test",
-  //     `${count} New Error${count > 1 ? "s" : ""} Added`
-  //   );
-  //   core.summary.write();
-  //   // core.summary(`${count} New Error${count > 1 ? "s" : ""} Added`);
-  //   core.setFailed(`${count} New Error${count > 1 ? "s" : ""} Added`);
-  // } else if (fixedErrors.length) {
-  //   // const count = fixedErrors.length;
-  //   // core.setOutput(`${count} New Error${count > 1 ? "s" : ""} Added`);
-  // }
-
-  // console.log("response", response.data);
 }
 
 try {

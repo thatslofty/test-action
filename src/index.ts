@@ -45,12 +45,12 @@ async function run(): Promise<void> {
   const listForRef = await octokit.rest.checks.listForRef({
     owner: github.context?.repo.owner,
     repo: github.context?.repo.repo,
-    ref: github.context?.sha,
+    ref: github.context?.payload.after,
   });
   const listSuiteForRef = await octokit.rest.checks.listSuitesForRef({
     owner: github.context?.repo.owner,
     repo: github.context?.repo.repo,
-    ref: github.context?.sha,
+    ref: github.context?.payload.after,
   });
 
   console.log({ listForRef, listSuiteForRef });

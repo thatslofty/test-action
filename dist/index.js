@@ -10941,12 +10941,12 @@ function run() {
         const listForRef = yield octokit.rest.checks.listForRef({
             owner: (_c = github.context) === null || _c === void 0 ? void 0 : _c.repo.owner,
             repo: (_d = github.context) === null || _d === void 0 ? void 0 : _d.repo.repo,
-            ref: (_e = github.context) === null || _e === void 0 ? void 0 : _e.sha,
+            ref: (_e = github.context) === null || _e === void 0 ? void 0 : _e.payload.after,
         });
         const listSuiteForRef = yield octokit.rest.checks.listSuitesForRef({
             owner: (_f = github.context) === null || _f === void 0 ? void 0 : _f.repo.owner,
             repo: (_g = github.context) === null || _g === void 0 ? void 0 : _g.repo.repo,
-            ref: (_h = github.context) === null || _h === void 0 ? void 0 : _h.sha,
+            ref: (_h = github.context) === null || _h === void 0 ? void 0 : _h.payload.after,
         });
         console.log({ listForRef, listSuiteForRef });
     });

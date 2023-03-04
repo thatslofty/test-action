@@ -13225,7 +13225,12 @@ function run() {
         const { data } = yield octokit.rest.checks.listForRef(Object.assign(Object.assign({}, github.context.repo), { ref: (_l = github.context) === null || _l === void 0 ? void 0 : _l.payload.after }));
         const currentCheck = data.check_runs.find((r) => r.name === core.getInput("job-name"));
         yield octokit.rest.checks.update(Object.assign(Object.assign({}, github.context.repo), { check_run_id: currentCheck === null || currentCheck === void 0 ? void 0 : currentCheck.id, conclusion: newErrors.length ? "failure" : "success", output: {
-                title: newCount > 0 ? failureMessage : fixedCount > 0 ? fixedMessage : successMessage,
+                title: newCount > 0
+                    ? failureMessage
+                    : fixedCount > 0
+                        ? fixedMessage
+                        : successMessage,
+                summary: `New Errors: ${newCount}, Fixed Errors: ${fixedCount}`,
             } }));
     });
 }

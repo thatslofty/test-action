@@ -42,8 +42,12 @@ async function run(): Promise<void> {
   const newCount = newErrors.length;
   const fixedCount = fixedErrors.length;
   const successMessage = "👍 No New Errors";
-  const fixedMessage = `👍 ${fixedCount} Error${fixedCount > 1 ? "s" : ""} Fixed`;
-  const failureMessage = `👎 ${newCount} New Error${newCount > 1 ? "s" : ""} Added`;
+  const fixedMessage = `👍 ${fixedCount} Error${
+    fixedCount > 1 ? "s" : ""
+  } Fixed`;
+  const failureMessage = `👎 ${newCount} New Error${
+    newCount > 1 ? "s" : ""
+  } Added`;
 
   const octokit = github.getOctokit(githubToken);
   const { data } = await octokit.rest.checks.listForRef({
@@ -58,7 +62,13 @@ async function run(): Promise<void> {
     check_run_id: currentCheck?.id,
     conclusion: newErrors.length ? "failure" : "success",
     output: {
-      title: newCount > 0 ? failureMessage : fixedCount > 0 ? fixedMessage : successMessage,
+      title:
+        newCount > 0
+          ? failureMessage
+          : fixedCount > 0
+          ? fixedMessage
+          : successMessage,
+      summary: `New Errors: ${newCount}, Fixed Errors: ${fixedCount}`,
     },
   });
 }

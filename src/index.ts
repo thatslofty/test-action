@@ -42,18 +42,27 @@ async function run(): Promise<void> {
 
   console.log("context", github.context?.repo, github.context?.payload);
 
-  const listForRef = await octokit.rest.checks.listForRef({
+  const { data } = await octokit.rest.checks.listForRef({
     owner: github.context?.repo.owner,
     repo: github.context?.repo.repo,
     ref: github.context?.payload.after,
   });
-  const listSuiteForRef = await octokit.rest.checks.listSuitesForRef({
-    owner: github.context?.repo.owner,
-    repo: github.context?.repo.repo,
-    ref: github.context?.payload.after,
-  });
+  console.log(data.check_runs);
 
-  console.log({ listForRef, listSuiteForRef });
+  const result = await octokit.rest.checks.update({
+    owner: github.context?.repo.owner,
+    repo: github.context?.repo.repo,
+    check_run_id: data.check_runs[0].id,
+    status: "completed",
+    conclusion: "success totally dude",
+  });
+  // const listSuiteForRef = await octokit.rest.checks.listSuitesForRef({
+  //   owner: github.context?.repo.owner,
+  //   repo: github.context?.repo.repo,
+  //   ref: github.context?.payload.after,
+  // });
+
+  // console.log({ listForRef, listSuiteForRef });
 
   // const newErrors = response.data?.newErrors ?? [];
   // const fixedErrors = response.data?.fixedErrors ?? [];

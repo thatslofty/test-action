@@ -13232,6 +13232,9 @@ function run() {
                         : successMessage,
                 summary: `New Errors: ${newCount}, Fixed Errors: ${fixedCount}`,
             } }));
+        if (newErrors.length) {
+            core.setFailed(failureMessage);
+        }
     });
 }
 try {

@@ -71,6 +71,10 @@ async function run(): Promise<void> {
       summary: `New Errors: ${newCount}, Fixed Errors: ${fixedCount}`,
     },
   });
+
+  if (newErrors.length) {
+    core.setFailed(failureMessage);
+  }
 }
 
 try {

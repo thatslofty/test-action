@@ -57,8 +57,7 @@ async function run(): Promise<void> {
     owner: github.context?.repo.owner,
     repo: github.context?.repo.repo,
     check_run_id: thisCheck?.id,
-    status: "completed",
-    conclusion: "success",
+    conclusion: "neutral",
     output: {
       title: "Error Report Title",
       summary: "This is a summary",

@@ -10950,8 +10950,7 @@ function run() {
             owner: (_d = github.context) === null || _d === void 0 ? void 0 : _d.repo.owner,
             repo: (_e = github.context) === null || _e === void 0 ? void 0 : _e.repo.repo,
             check_run_id: thisCheck === null || thisCheck === void 0 ? void 0 : thisCheck.id,
-            status: "completed",
-            conclusion: "success",
+            conclusion: "neutral",
             output: {
                 title: "Error Report Title",
                 summary: "This is a summary",

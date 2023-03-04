@@ -45,22 +45,22 @@ async function run(): Promise<void> {
   // console.log("context", github.context?.repo, github.context?.payload);
 
   const { data } = await octokit.rest.checks.listForRef({
-    owner: github.context?.repo.owner,
-    repo: github.context?.repo.repo,
+    ...github.context.repo,
     ref: github.context?.payload.after,
   });
 
   const thisCheck = data.check_runs.find((r) => r.name === "Error Report"); // TODO: can we use the app id or something?
-  console.log(data.check_runs);
+  // console.log(data.check_runs);
+  console.log(thisCheck?.app?.owner);
 
   const result = await octokit.rest.checks.update({
-    owner: github.context?.repo.owner,
-    repo: github.context?.repo.repo,
+    ...github.context.repo,
     check_run_id: thisCheck?.id,
     conclusion: "neutral",
     output: {
-      title: "Error Report Title",
+      title: "👍 Error Report Title",
       summary: "This is a summary",
+      text: "This is a text",
     },
   });
 

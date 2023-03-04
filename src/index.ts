@@ -40,17 +40,17 @@ async function run(): Promise<void> {
   // );
   const octokit = github.getOctokit(githubToken);
 
-  console.log("context", github.context?.repo, github.context?.payload.sha);
+  console.log("context", github.context?.repo, github.context?.payload);
 
   const listForRef = await octokit.rest.checks.listForRef({
     owner: github.context?.repo.owner,
     repo: github.context?.repo.repo,
-    ref: github.context?.payload.sha,
+    ref: github.context?.sha,
   });
   const listSuiteForRef = await octokit.rest.checks.listSuitesForRef({
     owner: github.context?.repo.owner,
     repo: github.context?.repo.repo,
-    ref: github.context?.payload.sha,
+    ref: github.context?.sha,
   });
 
   console.log({ listForRef, listSuiteForRef });

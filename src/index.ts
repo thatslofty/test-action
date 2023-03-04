@@ -40,22 +40,26 @@ async function run(): Promise<void> {
   // );
   const octokit = github.getOctokit(githubToken);
 
-  console.log("context", github.context?.repo, github.context?.payload);
+  // console.log("context", github.context?.repo, github.context?.payload);
 
   const { data } = await octokit.rest.checks.listForRef({
     owner: github.context?.repo.owner,
     repo: github.context?.repo.repo,
     ref: github.context?.payload.after,
   });
+
+  const thisCheck = data.check_runs.find((r) => r.name === "Error Report"); // TODO: can we use the app id or something?
   console.log(data.check_runs);
 
   const result = await octokit.rest.checks.update({
     owner: github.context?.repo.owner,
     repo: github.context?.repo.repo,
-    check_run_id: data.check_runs[0].id,
+    check_run_id: thisCheck?.id,
     status: "completed",
     conclusion: "success totally dude",
   });
+
+  console.log(result);
   // const listSuiteForRef = await octokit.rest.checks.listSuitesForRef({
   //   owner: github.context?.repo.owner,
   //   repo: github.context?.repo.repo,

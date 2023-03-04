@@ -10906,7 +10906,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const exec_1 = __nccwpck_require__(1514);
 function run() {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e;
     return __awaiter(this, void 0, void 0, function* () {
         const user_id = core.getInput("user-id");
         const token = core.getInput("token");
@@ -10937,20 +10937,22 @@ function run() {
         //   }
         // );
         const octokit = github.getOctokit(githubToken);
-        console.log("context", (_a = github.context) === null || _a === void 0 ? void 0 : _a.repo, (_b = github.context) === null || _b === void 0 ? void 0 : _b.payload);
+        // console.log("context", github.context?.repo, github.context?.payload);
         const { data } = yield octokit.rest.checks.listForRef({
-            owner: (_c = github.context) === null || _c === void 0 ? void 0 : _c.repo.owner,
-            repo: (_d = github.context) === null || _d === void 0 ? void 0 : _d.repo.repo,
-            ref: (_e = github.context) === null || _e === void 0 ? void 0 : _e.payload.after,
+            owner: (_a = github.context) === null || _a === void 0 ? void 0 : _a.repo.owner,
+            repo: (_b = github.context) === null || _b === void 0 ? void 0 : _b.repo.repo,
+            ref: (_c = github.context) === null || _c === void 0 ? void 0 : _c.payload.after,
         });
+        const thisCheck = data.check_runs.find((r) => r.name === "Error Report"); // TODO: can we use the app id or something?
         console.log(data.check_runs);
         const result = yield octokit.rest.checks.update({
-            owner: (_f = github.context) === null || _f === void 0 ? void 0 : _f.repo.owner,
-            repo: (_g = github.context) === null || _g === void 0 ? void 0 : _g.repo.repo,
-            check_run_id: data.check_runs[0].id,
+            owner: (_d = github.context) === null || _d === void 0 ? void 0 : _d.repo.owner,
+            repo: (_e = github.context) === null || _e === void 0 ? void 0 : _e.repo.repo,
+            check_run_id: thisCheck === null || thisCheck === void 0 ? void 0 : thisCheck.id,
             status: "completed",
             conclusion: "success totally dude",
         });
+        console.log(result);
     });
 }
 try {

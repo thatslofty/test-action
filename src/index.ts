@@ -24,24 +24,34 @@ async function run(): Promise<void> {
   // const payload = JSON.stringify(github.context.payload, undefined, 2);
   // console.log(`The event payload: ${payload}`);
 
-  const errorsArray = await runTSC();
+  // const errorsArray = await runTSC();
 
-  // TODO: possibly swap with https://github.com/actions/toolkit/tree/main/packages/http-client
-  const response = await axios.post(
-    `https://gh-actions.vercel.app/api/typescript-errors`,
-    {
-      token,
-      user_id,
-      action: github.context?.payload?.action,
-      branch: github.context.payload.pull_request?.head?.ref, // TODO: temp
-      base_branch: github.context.payload.pull_request?.base?.ref,
-      errors: errorsArray,
-    }
-  );
+  // // TODO: possibly swap with https://github.com/actions/toolkit/tree/main/packages/http-client
+  // const response = await axios.post(
+  //   `https://gh-actions.vercel.app/api/typescript-errors`,
+  //   {
+  //     token,
+  //     user_id,
+  //     action: github.context?.payload?.action,
+  //     branch: github.context.payload.pull_request?.head?.ref, // TODO: temp
+  //     base_branch: github.context.payload.pull_request?.base?.ref,
+  //     errors: errorsArray,
+  //   }
+  // );
   const octokit = github.getOctokit(githubToken);
 
-  const listForRef = await octokit.rest.checks.listForRef();
-  const listSuiteForRef = await octokit.rest.checks.listSuitesForRef();
+  console.log("context", github.context?.repo, github.context?.payload.sha);
+
+  const listForRef = await octokit.rest.checks.listForRef({
+    owner: github.context?.repo.owner,
+    repo: github.context?.repo.repo,
+    ref: github.context?.payload.sha,
+  });
+  const listSuiteForRef = await octokit.rest.checks.listSuitesForRef({
+    owner: github.context?.repo.owner,
+    repo: github.context?.repo.repo,
+    ref: github.context?.payload.sha,
+  });
 
   console.log({ listForRef, listSuiteForRef });
 

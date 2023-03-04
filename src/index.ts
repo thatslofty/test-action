@@ -7,6 +7,7 @@ import { runTSC } from "./run-tsc";
 async function run(): Promise<void> {
   const user_id = core.getInput("user-id");
   const token = core.getInput("token");
+  const githubToken = core.getInput("github-token");
   await exec("yarn"); // TODO: this needs to work with npm also. Could we just install tsc here without yarn?
   // console.log("context", JSON.stringify(github.context));
   // const branch = core.getInput("base-branch");
@@ -37,32 +38,38 @@ async function run(): Promise<void> {
       errors: errorsArray,
     }
   );
+  const octokit = github.getOctokit(githubToken);
 
-  const newErrors = response.data?.newErrors ?? [];
-  const fixedErrors = response.data?.fixedErrors ?? [];
-  if (newErrors.length) {
-    // build annotations in code for newErrors
-    newErrors.forEach((err: any) => {
-      core.error("New TS Error", {
-        file: err.path,
-        startLine: err.line,
-        startColumn: err.col,
-        title: err.message,
-      });
-    });
+  const listForRef = await octokit.rest.checks.listForRef();
+  const listSuiteForRef = await octokit.rest.checks.listSuitesForRef();
 
-    const count = newErrors.length;
-    core.summary.addDetails(
-      "test",
-      `${count} New Error${count > 1 ? "s" : ""} Added`
-    );
-    core.summary.write();
-    // core.summary(`${count} New Error${count > 1 ? "s" : ""} Added`);
-    core.setFailed(`${count} New Error${count > 1 ? "s" : ""} Added`);
-  } else if (fixedErrors.length) {
-    // const count = fixedErrors.length;
-    // core.setOutput(`${count} New Error${count > 1 ? "s" : ""} Added`);
-  }
+  console.log({ listForRef, listSuiteForRef });
+
+  // const newErrors = response.data?.newErrors ?? [];
+  // const fixedErrors = response.data?.fixedErrors ?? [];
+  // if (newErrors.length) {
+  //   // build annotations in code for newErrors
+  //   newErrors.forEach((err: any) => {
+  //     core.error("New TS Error", {
+  //       file: err.path,
+  //       startLine: err.line,
+  //       startColumn: err.col,
+  //       title: err.message,
+  //     });
+  //   });
+
+  //   const count = newErrors.length;
+  //   core.summary.addDetails(
+  //     "test",
+  //     `${count} New Error${count > 1 ? "s" : ""} Added`
+  //   );
+  //   core.summary.write();
+  //   // core.summary(`${count} New Error${count > 1 ? "s" : ""} Added`);
+  //   core.setFailed(`${count} New Error${count > 1 ? "s" : ""} Added`);
+  // } else if (fixedErrors.length) {
+  //   // const count = fixedErrors.length;
+  //   // core.setOutput(`${count} New Error${count > 1 ? "s" : ""} Added`);
+  // }
 
   // console.log("response", response.data);
 }

@@ -7,6 +7,9 @@ inputs:
   token:
     description: "Token"
     required: true
+  github-token:
+    description: "Github Token - ${{ secrets.GITHUB_TOKEN }} - https://help.github.com/en/actions/automating-your-workflow-with-github-actions/authenticating-with-the-github_token#about-the-github_token-secret"
+    required: true
 outputs:
   errors-list:
     description: "New errors to report"

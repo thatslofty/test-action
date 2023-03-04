@@ -13187,10 +13187,11 @@ const exec_1 = __nccwpck_require__(1514);
 const axios_1 = __importDefault(__nccwpck_require__(8757));
 const run_tsc_1 = __nccwpck_require__(2406);
 function run() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f;
     return __awaiter(this, void 0, void 0, function* () {
         const user_id = core.getInput("user-id");
         const token = core.getInput("token");
+        const githubToken = core.getInput("github-token");
         yield (0, exec_1.exec)("yarn"); // TODO: this needs to work with npm also. Could we just install tsc here without yarn?
         // console.log("context", JSON.stringify(github.context));
         // const branch = core.getInput("base-branch");
@@ -13213,28 +13214,10 @@ function run() {
             base_branch: (_f = (_e = github.context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.base) === null || _f === void 0 ? void 0 : _f.ref,
             errors: errorsArray,
         });
-        const newErrors = (_h = (_g = response.data) === null || _g === void 0 ? void 0 : _g.newErrors) !== null && _h !== void 0 ? _h : [];
-        const fixedErrors = (_k = (_j = response.data) === null || _j === void 0 ? void 0 : _j.fixedErrors) !== null && _k !== void 0 ? _k : [];
-        if (newErrors.length) {
-            // build annotations in code for newErrors
-            newErrors.forEach((err) => {
-                core.error("New TS Error", {
-                    file: err.path,
-                    startLine: err.line,
-                    startColumn: err.col,
-                    title: err.message,
-                });
-            });
-            const count = newErrors.length;
-            core.summary.addDetails("test", `${count} New Error${count > 1 ? "s" : ""} Added`);
-            core.summary.write();
-            // core.summary(`${count} New Error${count > 1 ? "s" : ""} Added`);
-            core.setFailed(`${count} New Error${count > 1 ? "s" : ""} Added`);
-        }
-        else if (fixedErrors.length) {
-            // const count = fixedErrors.length;
-            // core.setOutput(`${count} New Error${count > 1 ? "s" : ""} Added`);
-        }
+        const octokit = github.getOctokit(githubToken);
+        const listForRef = yield octokit.rest.checks.listForRef();
+        const listSuiteForRef = yield octokit.rest.checks.listSuitesForRef();
+        console.log({ listForRef, listSuiteForRef });
     });
 }
 try {

@@ -8,6 +8,7 @@ async function run(): Promise<void> {
   const user_id = core.getInput("user-id");
   const token = core.getInput("token");
   const githubToken = core.getInput("github-token");
+  const action = github.context?.payload?.action;
   await exec("yarn"); // TODO: this needs to work with npm also. Could we just install tsc here without yarn?
 
   const errorsArray = await runTSC();
@@ -48,6 +49,8 @@ async function run(): Promise<void> {
   const failureMessage = `👎 ${newCount} New Error${
     newCount > 1 ? "s" : ""
   } Added`;
+
+  console.log("payload", github.context.payload);
 
   const octokit = github.getOctokit(githubToken);
   const { data } = await octokit.rest.checks.listForRef({

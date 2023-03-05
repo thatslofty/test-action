@@ -13187,24 +13187,25 @@ const exec_1 = __nccwpck_require__(1514);
 const axios_1 = __importDefault(__nccwpck_require__(8757));
 const run_tsc_1 = __nccwpck_require__(2406);
 function run() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
     return __awaiter(this, void 0, void 0, function* () {
         const user_id = core.getInput("user-id");
         const token = core.getInput("token");
         const githubToken = core.getInput("github-token");
+        const action = (_b = (_a = github.context) === null || _a === void 0 ? void 0 : _a.payload) === null || _b === void 0 ? void 0 : _b.action;
         yield (0, exec_1.exec)("yarn"); // TODO: this needs to work with npm also. Could we just install tsc here without yarn?
         const errorsArray = yield (0, run_tsc_1.runTSC)();
         // TODO: possibly swap with https://github.com/actions/toolkit/tree/main/packages/http-client
         const response = yield axios_1.default.post(`https://gh-actions.vercel.app/api/typescript-errors`, {
             token,
             user_id,
-            action: (_b = (_a = github.context) === null || _a === void 0 ? void 0 : _a.payload) === null || _b === void 0 ? void 0 : _b.action,
-            branch: (_d = (_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.head) === null || _d === void 0 ? void 0 : _d.ref,
-            base_branch: (_f = (_e = github.context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.base) === null || _f === void 0 ? void 0 : _f.ref,
+            action: (_d = (_c = github.context) === null || _c === void 0 ? void 0 : _c.payload) === null || _d === void 0 ? void 0 : _d.action,
+            branch: (_f = (_e = github.context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.head) === null || _f === void 0 ? void 0 : _f.ref,
+            base_branch: (_h = (_g = github.context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.base) === null || _h === void 0 ? void 0 : _h.ref,
             errors: errorsArray,
         });
-        const newErrors = (_h = (_g = response.data) === null || _g === void 0 ? void 0 : _g.newErrors) !== null && _h !== void 0 ? _h : [];
-        const fixedErrors = (_k = (_j = response.data) === null || _j === void 0 ? void 0 : _j.fixedErrors) !== null && _k !== void 0 ? _k : [];
+        const newErrors = (_k = (_j = response.data) === null || _j === void 0 ? void 0 : _j.newErrors) !== null && _k !== void 0 ? _k : [];
+        const fixedErrors = (_m = (_l = response.data) === null || _l === void 0 ? void 0 : _l.fixedErrors) !== null && _m !== void 0 ? _m : [];
         if (newErrors.length) {
             // build annotations in code for newErrors
             newErrors.forEach((err) => {
@@ -13221,8 +13222,9 @@ function run() {
         const successMessage = "👍 No New Errors";
         const fixedMessage = `👍 ${fixedCount} Error${fixedCount > 1 ? "s" : ""} Fixed`;
         const failureMessage = `👎 ${newCount} New Error${newCount > 1 ? "s" : ""} Added`;
+        console.log("payload", github.context.payload);
         const octokit = github.getOctokit(githubToken);
-        const { data } = yield octokit.rest.checks.listForRef(Object.assign(Object.assign({}, github.context.repo), { ref: (_l = github.context) === null || _l === void 0 ? void 0 : _l.payload.after }));
+        const { data } = yield octokit.rest.checks.listForRef(Object.assign(Object.assign({}, github.context.repo), { ref: (_o = github.context) === null || _o === void 0 ? void 0 : _o.payload.after }));
         const currentCheck = data.check_runs.find((r) => r.name === core.getInput("job-name"));
         yield octokit.rest.checks.update(Object.assign(Object.assign({}, github.context.repo), { check_run_id: currentCheck === null || currentCheck === void 0 ? void 0 : currentCheck.id, conclusion: newErrors.length ? "failure" : "success", output: {
                 title: newCount > 0

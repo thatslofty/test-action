@@ -8,7 +8,10 @@ async function run(): Promise<void> {
   const user_id = core.getInput("user-id");
   const token = core.getInput("token");
   const githubToken = core.getInput("github-token");
-  const action = github.context?.payload?.action;
+  let action = github.context?.payload?.action;
+  if (action === "reopened") {
+    action = "opened";
+  }
   await exec("yarn"); // TODO: this needs to work with npm also. Could we just install tsc here without yarn?
 
   const errorsArray = await runTSC();
@@ -22,6 +25,7 @@ async function run(): Promise<void> {
       action: github.context?.payload?.action,
       branch: github.context.payload.pull_request?.head?.ref,
       base_branch: github.context.payload.pull_request?.base?.ref,
+      merged: github.context.payload.pull_request?.merged,
       errors: errorsArray,
     }
   );

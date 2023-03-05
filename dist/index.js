@@ -13187,12 +13187,15 @@ const exec_1 = __nccwpck_require__(1514);
 const axios_1 = __importDefault(__nccwpck_require__(8757));
 const run_tsc_1 = __nccwpck_require__(2406);
 function run() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u;
     return __awaiter(this, void 0, void 0, function* () {
         const user_id = core.getInput("user-id");
         const token = core.getInput("token");
         const githubToken = core.getInput("github-token");
-        const action = (_b = (_a = github.context) === null || _a === void 0 ? void 0 : _a.payload) === null || _b === void 0 ? void 0 : _b.action;
+        let action = (_b = (_a = github.context) === null || _a === void 0 ? void 0 : _a.payload) === null || _b === void 0 ? void 0 : _b.action;
+        if (action === "reopened") {
+            action = "opened";
+        }
         yield (0, exec_1.exec)("yarn"); // TODO: this needs to work with npm also. Could we just install tsc here without yarn?
         const errorsArray = yield (0, run_tsc_1.runTSC)();
         // TODO: possibly swap with https://github.com/actions/toolkit/tree/main/packages/http-client
@@ -13202,10 +13205,11 @@ function run() {
             action: (_d = (_c = github.context) === null || _c === void 0 ? void 0 : _c.payload) === null || _d === void 0 ? void 0 : _d.action,
             branch: (_f = (_e = github.context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.head) === null || _f === void 0 ? void 0 : _f.ref,
             base_branch: (_h = (_g = github.context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.base) === null || _h === void 0 ? void 0 : _h.ref,
+            merged: (_j = github.context.payload.pull_request) === null || _j === void 0 ? void 0 : _j.merged,
             errors: errorsArray,
         });
-        const newErrors = (_k = (_j = response.data) === null || _j === void 0 ? void 0 : _j.newErrors) !== null && _k !== void 0 ? _k : [];
-        const fixedErrors = (_m = (_l = response.data) === null || _l === void 0 ? void 0 : _l.fixedErrors) !== null && _m !== void 0 ? _m : [];
+        const newErrors = (_l = (_k = response.data) === null || _k === void 0 ? void 0 : _k.newErrors) !== null && _l !== void 0 ? _l : [];
+        const fixedErrors = (_o = (_m = response.data) === null || _m === void 0 ? void 0 : _m.fixedErrors) !== null && _o !== void 0 ? _o : [];
         if (newErrors.length) {
             // build annotations in code for newErrors
             newErrors.forEach((err) => {
@@ -13223,8 +13227,8 @@ function run() {
         const fixedMessage = `👍 ${fixedCount} Error${fixedCount > 1 ? "s" : ""} Fixed`;
         const failureMessage = `👎 ${newCount} New Error${newCount > 1 ? "s" : ""} Added`;
         const ref = action === "closed" || action === "opened"
-            ? (_r = (_q = (_p = (_o = github.context) === null || _o === void 0 ? void 0 : _o.payload) === null || _p === void 0 ? void 0 : _p.pull_request) === null || _q === void 0 ? void 0 : _q.head) === null || _r === void 0 ? void 0 : _r.ref
-            : (_t = (_s = github.context) === null || _s === void 0 ? void 0 : _s.payload) === null || _t === void 0 ? void 0 : _t.after;
+            ? (_s = (_r = (_q = (_p = github.context) === null || _p === void 0 ? void 0 : _p.payload) === null || _q === void 0 ? void 0 : _q.pull_request) === null || _r === void 0 ? void 0 : _r.head) === null || _s === void 0 ? void 0 : _s.ref
+            : (_u = (_t = github.context) === null || _t === void 0 ? void 0 : _t.payload) === null || _u === void 0 ? void 0 : _u.after;
         console.log("payload", github.context.payload);
         const octokit = github.getOctokit(githubToken);
         const { data } = yield octokit.rest.checks.listForRef(Object.assign(Object.assign({}, github.context.repo), { ref }));

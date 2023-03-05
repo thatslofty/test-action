@@ -13187,7 +13187,7 @@ const exec_1 = __nccwpck_require__(1514);
 const axios_1 = __importDefault(__nccwpck_require__(8757));
 const run_tsc_1 = __nccwpck_require__(2406);
 function run() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
     return __awaiter(this, void 0, void 0, function* () {
         const user_id = core.getInput("user-id");
         const token = core.getInput("token");
@@ -13222,9 +13222,12 @@ function run() {
         const successMessage = "👍 No New Errors";
         const fixedMessage = `👍 ${fixedCount} Error${fixedCount > 1 ? "s" : ""} Fixed`;
         const failureMessage = `👎 ${newCount} New Error${newCount > 1 ? "s" : ""} Added`;
+        const ref = action === "closed"
+            ? (_r = (_q = (_p = (_o = github.context) === null || _o === void 0 ? void 0 : _o.payload) === null || _p === void 0 ? void 0 : _p.pull_request) === null || _q === void 0 ? void 0 : _q.head) === null || _r === void 0 ? void 0 : _r.ref
+            : (_t = (_s = github.context) === null || _s === void 0 ? void 0 : _s.payload) === null || _t === void 0 ? void 0 : _t.after;
         console.log("payload", github.context.payload);
         const octokit = github.getOctokit(githubToken);
-        const { data } = yield octokit.rest.checks.listForRef(Object.assign(Object.assign({}, github.context.repo), { ref: (_o = github.context) === null || _o === void 0 ? void 0 : _o.payload.after }));
+        const { data } = yield octokit.rest.checks.listForRef(Object.assign(Object.assign({}, github.context.repo), { ref }));
         const currentCheck = data.check_runs.find((r) => r.name === core.getInput("job-name"));
         yield octokit.rest.checks.update(Object.assign(Object.assign({}, github.context.repo), { check_run_id: currentCheck === null || currentCheck === void 0 ? void 0 : currentCheck.id, conclusion: newErrors.length ? "failure" : "success", output: {
                 title: newCount > 0

@@ -49,13 +49,17 @@ async function run(): Promise<void> {
   const failureMessage = `👎 ${newCount} New Error${
     newCount > 1 ? "s" : ""
   } Added`;
+  const ref =
+    action === "closed"
+      ? github.context?.payload?.pull_request?.head?.ref
+      : github.context?.payload?.after;
 
   console.log("payload", github.context.payload);
 
   const octokit = github.getOctokit(githubToken);
   const { data } = await octokit.rest.checks.listForRef({
     ...github.context.repo,
-    ref: github.context?.payload.after,
+    ref,
   });
   const currentCheck = data.check_runs.find(
     (r) => r.name === core.getInput("job-name")

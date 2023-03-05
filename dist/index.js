@@ -13224,7 +13224,7 @@ function run() {
         const newCount = newErrors.length;
         const fixedCount = fixedErrors.length;
         const successMessage = "👍 No New Errors";
-        const fixedMessage = `👍 ${fixedCount} Error${fixedCount > 1 ? "s" : ""} Fixed`;
+        const fixedMessage = `🎉 ${fixedCount} Error${fixedCount > 1 ? "s" : ""} Fixed`;
         const failureMessage = `👎 ${newCount} New Error${newCount > 1 ? "s" : ""} Added`;
         const ref = action === "closed" || action === "opened"
             ? (_s = (_r = (_q = (_p = github.context) === null || _p === void 0 ? void 0 : _p.payload) === null || _q === void 0 ? void 0 : _q.pull_request) === null || _r === void 0 ? void 0 : _r.head) === null || _s === void 0 ? void 0 : _s.ref

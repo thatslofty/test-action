@@ -47,7 +47,7 @@ async function run(): Promise<void> {
   const newCount = newErrors.length;
   const fixedCount = fixedErrors.length;
   const successMessage = "👍 No New Errors";
-  const fixedMessage = `👍 ${fixedCount} Error${
+  const fixedMessage = `🎉 ${fixedCount} Error${
     fixedCount > 1 ? "s" : ""
   } Fixed`;
   const failureMessage = `👎 ${newCount} New Error${

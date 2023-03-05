@@ -13222,7 +13222,7 @@ function run() {
         const successMessage = "👍 No New Errors";
         const fixedMessage = `👍 ${fixedCount} Error${fixedCount > 1 ? "s" : ""} Fixed`;
         const failureMessage = `👎 ${newCount} New Error${newCount > 1 ? "s" : ""} Added`;
-        const ref = action === "closed"
+        const ref = action === "closed" || action === "opened"
             ? (_r = (_q = (_p = (_o = github.context) === null || _o === void 0 ? void 0 : _o.payload) === null || _p === void 0 ? void 0 : _p.pull_request) === null || _q === void 0 ? void 0 : _q.head) === null || _r === void 0 ? void 0 : _r.ref
             : (_t = (_s = github.context) === null || _s === void 0 ? void 0 : _s.payload) === null || _t === void 0 ? void 0 : _t.after;
         console.log("payload", github.context.payload);

@@ -50,7 +50,7 @@ async function run(): Promise<void> {
     newCount > 1 ? "s" : ""
   } Added`;
   const ref =
-    action === "closed"
+    action === "closed" || action === "opened"
       ? github.context?.payload?.pull_request?.head?.ref
       : github.context?.payload?.after;
 
